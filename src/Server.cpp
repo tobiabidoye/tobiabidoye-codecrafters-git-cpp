@@ -95,6 +95,9 @@ void catfile(std::string & blobHash){
 
     //extracted data is processed to a string then displayed
 
-    std::string decompressed (binaryData.begin(),binaryData.end());
-    std::cout << decompressed << std::endl;
+    std::string object_str{std::istreambuf_iterator<char>(myfile),
+                           std::istreambuf_iterator<char>()};
+    myfile.close();
+    const auto object_content = object_str.substr(object_str.find('\0') + 1);
+    std::cout << object_content << std::flush;
 }
