@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <zlib.h>
 
 //predeclared functions
 //this function will assist in the opening of the catfile
@@ -90,8 +91,10 @@ void catfile(std::string & blobHash){
         //storing extracted data into a vector
         binaryData.push_back(fileContent);
     }
+    myfile.close();
 
     //extracted data is processed to a string then displayed
+
     std::string decompressed (binaryData.begin(),binaryData.end());
     std::cout << decompressed << std::endl;
 }
