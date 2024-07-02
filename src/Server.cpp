@@ -2,6 +2,11 @@
 #include <filesystem>
 #include <fstream>
 #include <string>
+#include <vector>
+
+//predeclared functions
+//this function will assist in the opening of the catfile
+void catfile(std::string & blobhash);
 
 int main(int argc, char *argv[])
 {
@@ -41,10 +46,52 @@ int main(int argc, char *argv[])
              std::cerr << e.what() << '\n';
              return EXIT_FAILURE;
          }
-     } else {
+     }else if(command == "cat-file"){
+
+         if(argc != 4 || argv[2] != "-p"){
+             //validating the number of arguments for the catfile command
+             std::cerr << "Invalid arguments" << std::endl;
+             return EXIT_FAILURE;
+         }
+         //there will be 4 arguments
+         //constructing file path
+         std::string blobHash = argv[3];
+         catfile(blobHash);
+
+     }else {
          std::cerr << "Unknown command " << command << '\n';
          return EXIT_FAILURE;
      }
 
      return EXIT_SUCCESS;
+}
+
+void catfile(std::string & blobHash){
+    /*in an attempt to construct a filepath using a blobhash
+     for example in this hash e88f7a929cd70b0274c4ea33b209c97fa845fdbc
+     the first two characters e8 would be directory name and
+     the object name would be the rest of the characters */
+
+    std::string blobDir = blobHash.substr(0,2);
+    std::string objName = blobHash.substr(2);
+    std::string filePath = std::filesystem::path(".git")/"objects"/blobDir/objName;
+
+    //now after all this we should open the file in binary for opening non txt files
+    std::ifstream myfile(filePath, std::ios::binary);
+    if(!myfile.is_open()){
+        std::cout << "File could not be opened" << std::endl;
+        return;
+    }
+
+    //extracting content from the binary file
+    std::vector <char> binaryData;
+    char fileContent;
+    while(myfile.get(fileContent)){
+        //storing extracted data into a vector
+        binaryData.push_back(fileContent);
+    }
+
+    //extracted data is processed to a string then displayed
+    std::string decompressed (binaryData.begin(),binaryData.end());
+    std::cout << decompressed << std::endl;
 }
