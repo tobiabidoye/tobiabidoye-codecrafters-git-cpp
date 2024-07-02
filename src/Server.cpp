@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
          }
      }else if(command == "cat-file"){
 
-         if(argc != 4 || argv[2] != "-p"){
+         if(argc != 4 || std::string(argv[2]) != "-p"){
              //validating the number of arguments for the catfile command
              std::cerr << "Invalid arguments" << std::endl;
              return EXIT_FAILURE;
@@ -95,9 +95,6 @@ void catfile(std::string & blobHash){
 
     //extracted data is processed to a string then displayed
 
-    std::string object_str{std::istreambuf_iterator<char>(myfile),
-                           std::istreambuf_iterator<char>()};
-    myfile.close();
-    const auto object_content = object_str.substr(object_str.find('\0') + 1);
-    std::cout << object_content << std::flush;
+    std::string decompressed (binaryData.begin(),binaryData.end());
+    std::cout << decompressed << std::endl;
 }
